@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  
+  <title>count-down</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../count-down.html">
+</head>
+<body>
+
+  <!-- You use the document as a place to set up your fixtures. -->
+  <count-down></count-down>
+
+  <script>
+    var myEl = document.querySelector('count-down');
+
+    suite('<count-down>', function() {
+
+      test('defines the "author" property', function() {
+        assert.equal(myEl.author, 'Dimitri Glazkov');
+      });
+
+      test('says hello', function() {
+        assert.equal(myEl.sayHello(), 'count-down says, Hello World!');
+
+        var greetings = myEl.sayHello('greetings Earthlings');
+        assert.equal(greetings, 'count-down says, greetings Earthlings');
+      });
+
+      test('fires lasers', function(done) {
+        myEl.addEventListener('count-down-lasers-success', function(event) {
+          assert.equal(event.detail.sound, 'Pew pew pew!');
+          done();
+        });
+        myEl.fireLasers();
+      });
+
+    });
+  </script>
+
+</body>
+</html>

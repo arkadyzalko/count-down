@@ -1,0 +1,27 @@
+{
+  "name": "count-down",
+  "version": "0.0.1",
+  "authors": [
+    "Arkady Zalkowitsch <arkadyzalko@gmail.com>"
+  ],
+  "description": "Element providing countdown solution.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "count-down"
+  ],
+  "main": "count-down.html",
+  "license": "MIT",
+  "homepage": "https://github.com/arkadyzalko/count-down",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.2"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
+  }
+}

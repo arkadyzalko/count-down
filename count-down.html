@@ -1,0 +1,96 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <count-down></count-down>
+
+@element count-down
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://labdeq.cepel.br/wc/count-down
+-->
+<polymer-element name="count-down" attributes="notitle author">
+
+  <template>
+
+    <link rel="stylesheet" href="count-down.css">
+
+    <h1>Hello from {{ undefined | defaultValue('count-down') }}</h1>
+    <content></content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Dimitri Glazkov'
+       */
+      author: 'Dimitri Glazkov',
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+      fancy: false,
+      
+      defaultValue: undefined,
+        
+      created: function() {   
+        console.log("count-down created");
+        this.defaultValue = window.somaGlobals.h.defaultValue;
+      },
+
+      ready: function() {
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+        console.log("count-down ready");
+      },
+
+      /**
+       * The `sayHello` method will return a greeting.
+       *
+       * @method sayHello
+       * @param {String} greeting Pass in a specific greeting.
+       * @return {String} Returns a string greeting.
+       */
+      sayHello: function(greeting) {
+        var response = greeting || 'Hello World!';
+        return 'count-down says, ' + response;
+      },
+
+      /**
+       * The `count-down-lasers-success` event is fired whenever we
+       * call fireLasers.
+       *
+       * @event count-down-lasers-success
+       * @param {Object} detail
+       *   @param {string} detail.sound An amazing sound.
+       */
+
+      /**
+       * The `fireLasers` method will fire the lasers. At least
+       * it will dispatch an event that claims lasers were fired :)
+       *
+       * @method fireLasers
+       */
+      fireLasers: function() {
+        this.fire('count-down-lasers-success', { sound: 'Pew pew pew!' });
+      }
+
+    });
+
+  </script>
+
+</polymer-element>
