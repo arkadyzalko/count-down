@@ -12,81 +12,146 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://labdeq.cepel.br/wc/count-down
 -->
-<polymer-element name="count-down" attributes="notitle author">
-
+<polymer-element name="count-down" attributes="name time">
   <template>
-
-    <link rel="stylesheet" href="count-down.css">
-
-    <h1>Hello from {{ undefined | defaultValue('count-down') }}</h1>
-    <content></content>
-
+    <h1 on-click="{{hasClicked}}">{{timeArray[0]}}:{{timeArray[1]}}:{{timeArray[2]}}</h1>
   </template>
 
   <script>
-
     Polymer({
-      /**
-       * The `author` attribute sets an initial author
-       *
-       * @attribute author
-       * @type string
-       * @default 'Dimitri Glazkov'
-       */
-      author: 'Dimitri Glazkov',
+
+      publish: {
+        /**
+         * The `time` attribute sets initial countdown time
+         *
+         * @attribute time
+         * @type string
+         * @default "00:00:00"
+         */
+        time: {
+          value: "00:00:00",
+          reflect: true
+        },
+        counting:{
+          reflect: true
+        }
+      },
 
       /**
-       * `fancy` is a property that does something fancy.
+       * The `authors` property sets a group of authors
        *
-       * @property fancy
+       * @property authors
+       * @type array
+       * @default ['Arkady Zalkowitsch', 'Leandro Lima']
+       */
+      authors: ['Arkady Zalkowitsch', 'Leandro Lima'],
+
+      /**
+       * `secs` is a property that show time attribute in seconds.
+       *
+       * @property secs
        * @type bool
        * @default false
        */
-      fancy: false,
-      
-      defaultValue: undefined,
+      secs: 0,
+
+      timeArray: [0,0,0],
+
+      timeScale: [1, 60, 3600],// 86400], //, 604800],
+
+      created: function() {
+        this.secs = 0;
+
+        this.name ? null : (this.name = String(Math.floor(Math.random() * 10000) + 1));
+      },
+
+      domReady: function() {
+        this.time ? null : (this.time = this._secs2time(0));
         
-      created: function() {   
-        console.log("count-down created");
-        this.defaultValue = window.somaGlobals.h.defaultValue;
-      },
+        var counting = false;
+        this.start = (function() {
+          counting = true;
+        });
 
-      ready: function() {
-        // Ready is a lifecycle callback.
-        // You can do setup work in here.
-        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
-        console.log("count-down ready");
-      },
+        this.stop = (function() {
+          counting = false;
+        });
 
-      /**
-       * The `sayHello` method will return a greeting.
-       *
-       * @method sayHello
-       * @param {String} greeting Pass in a specific greeting.
-       * @return {String} Returns a string greeting.
-       */
-      sayHello: function(greeting) {
-        var response = greeting || 'Hello World!';
-        return 'count-down says, ' + response;
+        this.isCounting = (function() {
+          return counting;
+        });
+        this.start();
+        setInterval(this.decreaseTime, 1000, this);
       },
 
       /**
-       * The `count-down-lasers-success` event is fired whenever we
-       * call fireLasers.
+       * The `start` method will start counting.
        *
-       * @event count-down-lasers-success
-       * @param {Object} detail
-       *   @param {string} detail.sound An amazing sound.
+       * @method start
+       * @return {void} Returns nothing.
        */
+      start: function() {},
 
       /**
-       * The `fireLasers` method will fire the lasers. At least
-       * it will dispatch an event that claims lasers were fired :)
+       * The `stop` method will stop counting.
        *
-       * @method fireLasers
+       * @method stop
+       * @return {void} Returns nothing.
        */
-      fireLasers: function() {
-        this.fire('count-down-lasers-success', { sound: 'Pew pew pew!' });
+      stop: function() {},
+
+      /**
+       * The `stop` method will return true if countdown is counting.
+       *
+       * @method stop
+       * @return {void} Returns nothing.
+       */
+      isCounting: function() {},
+
+      pad: function(value) {
+        var s = String(value);
+        while (s.length < 2) s = '0' + s;
+        return s;
+      },
+
+      _secs2time: function(secs) {
+        var time = [];
+        var scale = this.timeScale;
+        var len = scale.length-1;
+        var tmp;
+        for (var i in scale) {
+          tmp = Math.floor(secs/scale[len-i]);
+          time.push(this.pad(tmp));
+          secs -=  tmp * scale[len-i];  
+        }
+        this.timeArray = time;
+        return time.join(":");
+      },
+
+      _time2secs: function(time) {
+        var time = time.split(':').reverse();
+        var sec = 0;
+        for (var i in time) {
+          sec += parseInt(time[i]) * this.timeScale[i];
+        }
+        return sec;
+      },
+
+      decreaseTime: function(myself) {
+        (myself.secs && myself.isCounting()) ? (myself.secs -=1) : null;
+      }, 
+
+      secsChanged: function(oldValue, newValue) {
+        this.time = this._secs2time(newValue);
+      },
+
+      timeChanged: function(oldValue, newValue) {
+        this.secs = this._time2secs(newValue);
+      },
+
+      hasClicked: function(evt) {
+        console.log(this.name + ": " + this.time);
+        this.onClick(evt);
       }
 
     });
